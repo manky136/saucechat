@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SauceChat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Login Screen ── */
+        #loginScreen {
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 12px;
+            padding: 40px 36px;
+            width: 360px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        #loginScreen h1 {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            color: #e94560;
+        }
+
+        #loginScreen p {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 28px;
+        }
+
+        #loginScreen label {
+            display: block;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        #loginScreen input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #0f3460;
+            background: #1a1a2e;
+            color: #eee;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #loginScreen input:focus {
+            border-color: #e94560;
+        }
+
+        #loginScreen button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #e94560;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        #loginScreen button:hover { background: #c73652; }
+        #loginScreen button:active { transform: scale(0.98); }
+
+        .error-msg {
+            color: #e94560;
+            font-size: 0.8rem;
+            margin-top: -12px;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        /* ── Chat Screen ── */
+        #chatScreen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            flex-direction: row;
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #16213e;
+            border-right: 1px solid #0f3460;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #sidebar h2 {
+            font-size: 1rem;
+            color: #e94560;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        #roomLabel {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        #connectedUsers .user-chip {
+            background: #0f3460;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            color: #cdd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #connectedUsers .user-chip::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4cff91;
+            flex-shrink: 0;
+        }
+
+        #chatMain {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatHeader {
+            padding: 16px 24px;
+            background: #16213e;
+            border-bottom: 1px solid #0f3460;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #cdd;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #messages .msg {
+            max-width: 70%;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        #messages .msg.mine {
+            align-self: flex-end;
+            background: #e94560;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        #messages .msg.theirs {
+            align-self: flex-start;
+            background: #0f3460;
+            color: #ddd;
+            border-bottom-left-radius: 4px;
+        }
+
+        #messages .msg .msg-sender {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+
+        #inputArea {
+            padding: 16px 24px;
+            background: #16213e;
+            border-top: 1px solid #0f3460;
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 24px;
+            border: 1px solid #0f3460;
+            background: #1a1a2e;
+            color: #eee;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #messageInput:focus { border-color: #e94560; }
+
+        #sendBtn {
+            padding: 10px 22px;
+            border-radius: 24px;
+            border: none;
+            background: #e94560;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #sendBtn:hover { background: #c73652; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Login Screen ── -->
+    <div id="loginScreen">
+        <h1>SauceChat 🔥</h1>
+        <p>Enter a username and room to start chatting</p>
+
+        <label for="usernameInput">Username</label>
+        <input id="usernameInput" type="text" placeholder="e.g. sauce42" maxlength="24" autocomplete="off" />
+        <div id="usernameError" class="error-msg">Please enter a username.</div>
+
+        <label for="roomInput">Room Name</label>
+        <input id="roomInput" type="text" placeholder="e.g. general" maxlength="32" autocomplete="off" />
+        <div id="roomError" class="error-msg">Please enter a room name.</div>
+
+        <button id="joinBtn">Join Room →</button>
+    </div>
+
+    <!-- ── Chat Screen ── -->
+    <div id="chatScreen">
+        <div id="sidebar">
+            <h2>Room</h2>
+            <div id="roomLabel"></div>
+            <h2>Online</h2>
+            <div id="connectedUsers"></div>
+        </div>
+        <div id="chatMain">
+            <div id="chatHeader"></div>
+            <div id="messages"></div>
+            <div id="inputArea">
+                <input id="messageInput" placeholder="Type a message..." autocomplete="off" />
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socket.IO client -->
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io("http://localhost:3000");
+
+        let username = "";
+        let room = "";
+
+        // ── Login logic ──
+        document.getElementById("joinBtn").addEventListener("click", joinRoom);
+        document.getElementById("usernameInput").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("roomInput").focus(); });
+        document.getElementById("roomInput").addEventListener("keydown", e => { if (e.key === "Enter") joinRoom(); });
+
+        function joinRoom() {
+            const uInput = document.getElementById("usernameInput").value.trim();
+            const rInput = document.getElementById("roomInput").value.trim();
+
+            let valid = true;
+            document.getElementById("usernameError").style.display = uInput ? "none" : "block";
+            document.getElementById("roomError").style.display = rInput ? "none" : "block";
+            if (!uInput || !rInput) return;
+
+            username = uInput;
+            room = rInput;
+
+            // Switch screens
+            document.getElementById("loginScreen").style.display = "none";
+            const chatScreen = document.getElementById("chatScreen");
+            chatScreen.style.display = "flex";
+            document.getElementById("roomLabel").textContent = "# " + room;
+            document.getElementById("chatHeader").textContent = "# " + room;
+
+            socket.emit("join", { username, room });
+            document.getElementById("messageInput").focus();
+        }
+
+        // ── Socket events ──
+        socket.on("users", (userList) => {
+            const container = document.getElementById("connectedUsers");
+            container.innerHTML = "";
+            userList.forEach((user) => {
+                const chip = document.createElement("div");
+                chip.className = "user-chip";
+                chip.textContent = user.username;
+                container.appendChild(chip);
+            });
+        });
+
+        socket.on("message", (data) => {
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "msg " + (data.sender === username ? "mine" : "theirs");
+
+            if (data.sender !== username) {
+                const senderEl = document.createElement("div");
+                senderEl.className = "msg-sender";
+                senderEl.textContent = data.sender;
+                msgDiv.appendChild(senderEl);
+            }
+
+            const textEl = document.createElement("div");
+            textEl.textContent = data.text;
+            msgDiv.appendChild(textEl);
+
+            const messages = document.getElementById("messages");
+            messages.appendChild(msgDiv);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        // ── Send message ──
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            if (!input.value.trim() || !room) return;
+
+            socket.emit("message", {
+                text: input.value.trim(),
+                sender: username,
+                room: room
+            });
+
+            input.value = "";
+        }
+
+        document.getElementById("sendBtn").addEventListener("click", sendMessage);
+        document.getElementById("messageInput").addEventListener("keydown", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+    </script>
+
+</body>
+
+</html>
