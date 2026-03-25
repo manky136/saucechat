@@ -4,8 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SauceChat</title>
+    <title>S4UC3_CH4T // ENCRYPTED NODE</title>
     <style>
+        :root {
+            --bg-base: #020202;
+            --bg-panel: #080808;
+            --main-green: #00ff41;
+            --dim-green: #008f11;
+            --alert-red: #ff003c;
+            --border-color: #003b00;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,86 +23,135 @@
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #1a1a2e;
-            color: #eee;
+            font-family: var(--font-mono);
+            background: var(--bg-base);
+            color: var(--main-green);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* CRT Scanline Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Glitch or glow effects */
+        .glow-text {
+            text-shadow: 0 0 5px var(--main-green), 0 0 10px var(--main-green);
         }
 
         /* ── Login Screen ── */
         #loginScreen {
-            background: #16213e;
-            border: 1px solid #0f3460;
-            border-radius: 12px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
             padding: 40px 36px;
-            width: 360px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            width: 400px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        #loginScreen::before {
+            content: "[ SECURE CONNECTION ESTABLISHED ]";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg-base);
+            padding: 0 10px;
+            font-size: 0.8rem;
+            color: var(--dim-green);
         }
 
         #loginScreen h1 {
             font-size: 1.8rem;
-            margin-bottom: 6px;
-            color: #e94560;
+            margin-bottom: 10px;
+            color: var(--main-green);
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--main-green);
         }
 
         #loginScreen p {
             font-size: 0.85rem;
-            color: #888;
+            color: var(--dim-green);
             margin-bottom: 28px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 10px;
         }
 
         #loginScreen label {
             display: block;
             font-size: 0.8rem;
-            color: #aaa;
+            color: var(--dim-green);
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
         }
 
         #loginScreen input {
             width: 100%;
             padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #0f3460;
-            background: #1a1a2e;
-            color: #eee;
-            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--main-green);
+            font-family: var(--font-mono);
+            font-size: 1rem;
             margin-bottom: 18px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: box-shadow 0.2s, border-color 0.2s;
         }
 
         #loginScreen input:focus {
-            border-color: #e94560;
+            border-color: var(--main-green);
+            box-shadow: inset 0 0 5px rgba(0, 255, 65, 0.3);
         }
 
         #loginScreen button {
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: #e94560;
-            color: #fff;
+            border: 1px solid var(--main-green);
+            background: transparent;
+            color: var(--main-green);
+            font-family: var(--font-mono);
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: bold;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        #loginScreen button:hover { background: #c73652; }
-        #loginScreen button:active { transform: scale(0.98); }
+        #loginScreen button:hover { 
+            background: var(--main-green);
+            color: #000;
+            box-shadow: 0 0 15px var(--main-green);
+        }
+        #loginScreen button:active { transform: translateY(2px); }
 
         .error-msg {
-            color: #e94560;
+            color: var(--alert-red);
             font-size: 0.8rem;
             margin-top: -12px;
             margin-bottom: 14px;
             display: none;
+            text-shadow: 0 0 5px var(--alert-red);
         }
+        .error-msg::before { content: "ERR: "; }
 
         /* ── Chat Screen ── */
         #chatScreen {
@@ -100,49 +159,57 @@
             width: 100vw;
             height: 100vh;
             flex-direction: row;
+            z-index: 10;
         }
 
         #sidebar {
-            width: 220px;
-            background: #16213e;
-            border-right: 1px solid #0f3460;
+            width: 260px;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border-color);
             padding: 20px 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
 
         #sidebar h2 {
-            font-size: 1rem;
-            color: #e94560;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--dim-green);
+            margin-bottom: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
         }
 
         #roomLabel {
-            font-size: 0.75rem;
-            color: #888;
+            font-size: 0.9rem;
+            color: var(--main-green);
             margin-bottom: 12px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        #roomLabel::before { content: "> TARGET_NODE: "; color: var(--dim-green); font-weight: normal; }
+
+        #connectedUsers {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         #connectedUsers .user-chip {
-            background: #0f3460;
-            border-radius: 20px;
-            padding: 6px 12px;
             font-size: 0.85rem;
-            color: #cdd;
+            color: var(--main-green);
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 4px 0;
         }
 
         #connectedUsers .user-chip::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4cff91;
+            content: '[ON]';
+            color: var(--dim-green);
+            font-size: 0.7rem;
             flex-shrink: 0;
         }
 
@@ -150,15 +217,16 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: var(--bg-base);
         }
 
         #chatHeader {
             padding: 16px 24px;
-            background: #16213e;
-            border-bottom: 1px solid #0f3460;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #cdd;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--main-green);
+            letter-spacing: 1px;
         }
 
         #messages {
@@ -167,136 +235,142 @@
             padding: 20px 24px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); border-left: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb { background: var(--dim-green); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--main-green); }
 
         #messages .msg {
-            max-width: 70%;
-            padding: 9px 14px;
-            border-radius: 12px;
-            font-size: 0.9rem;
+            max-width: 85%;
+            font-size: 0.95rem;
             line-height: 1.4;
             word-break: break-word;
+            display: flex;
+            flex-direction: column;
         }
 
         #messages .msg.mine {
             align-self: flex-end;
-            background: #e94560;
-            color: #fff;
-            border-bottom-right-radius: 4px;
+            text-align: right;
+            border-right: 2px solid var(--main-green);
+            padding-right: 12px;
         }
 
         #messages .msg.theirs {
             align-self: flex-start;
-            background: #0f3460;
-            color: #ddd;
-            border-bottom-left-radius: 4px;
+            border-left: 2px solid var(--dim-green);
+            padding-left: 12px;
+            color: #ccc;
         }
 
         #messages .msg .msg-sender {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            margin-bottom: 2px;
+            font-size: 0.75rem;
+            color: var(--dim-green);
+            margin-bottom: 4px;
+            text-transform: uppercase;
         }
 
         /* ── AI Message Styles ── */
         #messages .msg.ai-msg {
             align-self: flex-start;
-            background: linear-gradient(135deg, #6c4298, #9b51e0);
+            border-left: 2px solid var(--alert-red);
+            padding-left: 12px;
             color: #fff;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 4px 15px rgba(155, 81, 224, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
+            background: rgba(255, 0, 60, 0.05); /* Slight red back */
+            padding: 10px;
         }
 
         #messages .msg.ai-msg .msg-sender {
-            color: #f0e6ff;
-            opacity: 0.9;
-            font-weight: 600;
+            color: var(--alert-red);
+            font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            text-shadow: 0 0 5px rgba(255, 0, 60, 0.5);
         }
         
         .ai-hint {
             font-size: 0.75rem;
-            color: #888;
+            color: var(--dim-green);
             margin-top: 6px;
             text-align: center;
-            font-style: italic;
+            opacity: 0.7;
+        }
+        
+        .ai-hint b {
+            color: var(--main-green);
         }
 
         /* ── Typing Indicator ── */
         .typing-indicator {
             display: none;
-            padding: 8px 14px;
-            background: #16213e;
-            border-radius: 12px;
+            padding: 8px 12px;
             font-size: 0.85rem;
-            color: #9b51e0;
+            color: var(--alert-red);
             align-self: flex-start;
             align-items: center;
             gap: 6px;
             margin-bottom: 8px;
-            border: 1px solid #0f3460;
+            border-left: 2px solid var(--alert-red);
+            text-transform: uppercase;
+            animation: pulse 1.5s infinite;
         }
 
-        .typing-indicator .dots {
-            display: flex;
-            gap: 3px;
-        }
-
-        .typing-indicator .dot {
-            width: 4px;
-            height: 4px;
-            background: #9b51e0;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-
-        .typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         #inputArea {
             padding: 16px 24px;
-            background: #16213e;
-            border-top: 1px solid #0f3460;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-color);
             display: flex;
             gap: 10px;
+            align-items: center;
+        }
+        
+        #inputArea::before {
+            content: "root@node:~#";
+            color: var(--dim-green);
+            font-size: 0.95rem;
         }
 
         #messageInput {
             flex: 1;
-            padding: 10px 16px;
-            border-radius: 24px;
-            border: 1px solid #0f3460;
-            background: #1a1a2e;
-            color: #eee;
-            font-size: 0.95rem;
+            padding: 8px;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--main-green);
+            font-family: var(--font-mono);
+            font-size: 1rem;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        #messageInput:focus { border-color: #e94560; }
+        #messageInput:focus { border-color: var(--main-green); }
 
         #sendBtn {
-            padding: 10px 22px;
-            border-radius: 24px;
-            border: none;
-            background: #e94560;
-            color: #fff;
-            font-weight: 600;
+            padding: 8px 20px;
+            border: 1px solid var(--dim-green);
+            background: transparent;
+            color: var(--main-green);
+            font-family: var(--font-mono);
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
+            text-transform: uppercase;
+            transition: all 0.2s;
         }
 
-        #sendBtn:hover { background: #c73652; }
+        #sendBtn:hover { 
+            background: var(--main-green); 
+            color: #000;
+        }
     </style>
 </head>
 
@@ -304,43 +378,46 @@
 
     <!-- ── Login Screen ── -->
     <div id="loginScreen">
-        <h1>SauceChat 🔥</h1>
-        <p>Enter a username and room to start chatting</p>
+        <h1 class="glow-text">S4UC3_CH4T // TERMINAL</h1>
+        <p>IDENTIFICATION REQUIRED TO ACCESS ENCRYPTED NETWORK</p>
 
-        <label for="usernameInput">Username</label>
-        <input id="usernameInput" type="text" placeholder="e.g. sauce42" maxlength="24" autocomplete="off" />
-        <div id="usernameError" class="error-msg">Please enter a username.</div>
+        <label for="usernameInput">User Alias</label>
+        <input id="usernameInput" type="text" placeholder="guest_acc" maxlength="24" autocomplete="off" spellcheck="false" />
+        <div id="usernameError" class="error-msg">ACCESS DENIED: ALIAS REQUIRED</div>
 
-        <label for="roomInput">Room Name</label>
-        <input id="roomInput" type="text" placeholder="e.g. general" maxlength="32" autocomplete="off" />
-        <div id="roomError" class="error-msg">Please enter a room name.</div>
+        <label for="roomInput">Target Node Registry</label>
+        <input id="roomInput" type="text" placeholder="0x0000" maxlength="32" autocomplete="off" spellcheck="false" />
+        <div id="roomError" class="error-msg">ACCESS DENIED: NODE REGISTRY REQUIRED</div>
 
-        <button id="joinBtn">Join Room →</button>
+        <button id="joinBtn">Execute Connection</button>
     </div>
 
     <!-- ── Chat Screen ── -->
     <div id="chatScreen">
         <div id="sidebar">
-            <h2>Room</h2>
-            <div id="roomLabel"></div>
-            <h2>Online</h2>
-            <div id="connectedUsers"></div>
+            <div>
+                <h2>Target Specs</h2>
+                <div id="roomLabel"></div>
+            </div>
+            <div>
+                <h2>Active Connections</h2>
+                <div id="connectedUsers"></div>
+            </div>
         </div>
         <div id="chatMain">
             <div id="chatHeader"></div>
             <div id="messages"></div>
             
             <div id="aiTypingIndicator" class="typing-indicator">
-                <span>🤖 SauceAI is thinking</span>
-                <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                System Overload // AI Processing...
             </div>
 
             <div>
                 <div id="inputArea">
-                    <input id="messageInput" placeholder="Type a message..." autocomplete="off" />
-                    <button id="sendBtn">Send</button>
+                    <input id="messageInput" placeholder="Enter command or message..." autocomplete="off" spellcheck="false" />
+                    <button id="sendBtn">[ TX ]</button>
                 </div>
-                <div class="ai-hint">✨ Tip: Type <b>@ai &lt;question&gt;</b> or <b>@ai summarize</b></div>
+                <div class="ai-hint">SYSTEM HINT: Use <b>@ai &lt;query&gt;</b> or <b>@ai summarize</b> to access mainframe intel.</div>
             </div>
         </div>
     </div>
@@ -375,8 +452,8 @@
             document.getElementById("loginScreen").style.display = "none";
             const chatScreen = document.getElementById("chatScreen");
             chatScreen.style.display = "flex";
-            document.getElementById("roomLabel").textContent = "# " + room;
-            document.getElementById("chatHeader").textContent = "# " + room;
+            document.getElementById("roomLabel").textContent = room.toUpperCase();
+            document.getElementById("chatHeader").textContent = "ESTABLISHED P2P CONNECTION WITH >> " + room.toUpperCase();
 
             socket.emit("join", { username, room });
             document.getElementById("messageInput").focus();
@@ -389,7 +466,7 @@
             userList.forEach((user) => {
                 const chip = document.createElement("div");
                 chip.className = "user-chip";
-                chip.textContent = user.username;
+                chip.textContent = user.username.toUpperCase();
                 container.appendChild(chip);
             });
         });
@@ -406,8 +483,8 @@
             if (data.sender !== username || data.isAI) {
                 const senderEl = document.createElement("div");
                 senderEl.className = "msg-sender";
-                // Add a sparkle to bot name for extra juice
-                senderEl.innerHTML = data.isAI ? "✨ " + data.sender : data.sender;
+                // Add terminal user handle tag
+                senderEl.innerHTML = data.isAI ? "SYSTEM [AUTONOMOUS AI]" : `USR_${data.sender.toUpperCase()}`;
                 msgDiv.appendChild(senderEl);
             }
 
@@ -416,7 +493,7 @@
             // Basic formatting for AI bullet points
             let formattedText = data.text;
             if (data.isAI) {
-                formattedText = formattedText.replace(/\n•/g, '<br>•').replace(/\n\*/g, '<br>•').replace(/\n-/g, '<br>•');
+                formattedText = formattedText.replace(/\n•/g, '<br> > ').replace(/\n\*/g, '<br> > ').replace(/\n-/g, '<br> > ');
             }
             textEl.innerHTML = formattedText;
             
@@ -430,7 +507,7 @@
         // Toggle typing indicator
         socket.on("aiTyping", (isTyping) => {
             const indicator = document.getElementById("aiTypingIndicator");
-            indicator.style.display = isTyping ? "flex" : "none";
+            indicator.style.display = isTyping ? "block" : "none";
             const messages = document.getElementById("messages");
             messages.scrollTop = messages.scrollHeight;
         });
@@ -454,7 +531,5 @@
             if (e.key === "Enter") sendMessage();
         });
     </script>
-
 </body>
-
 </html>
